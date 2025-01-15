@@ -1,0 +1,209 @@
+
+                               Task #6
+==========================================================================
+CREATE DATABASENAME: Doctor-Patient-Appointment-System
+QUERY: CREATE DATABASE doctor;
+
+=====================================================================
+CREATE TABLE => Patients
+Query:1
+      CREATE TABLE Patients (
+    patient_id INT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    date_of_birth DATE,
+    gender VARCHAR(10),
+    address TEXT);
+
+Query:2
+INSERT INTO Patients VALUES 
+(1, 'Emily', 'Clark', 'emily.clark@example.com', '678-901-2345', '1990-05-12', 'Female', '123 Main St, Cityville'),
+(2, 'James', 'Miller', 'james.miller@example.com', '789-012-3456', '1985-07-22', 'Male', '456 Oak St, Townsville'),
+(3, 'Sophia', 'Taylor', 'sophia.taylor@example.com', '890-123-4567', '2000-01-30', 'Female', '789 Pine St, Villageville'),
+(4, 'Michael', 'Moore', 'michael.moore@example.com', '901-234-5678', '1992-10-04', 'Male', '321 Maple St, Cityville'),
+(5, 'Olivia', 'Anderson', 'olivia.anderson@example.com', '012-345-6789', '1988-03-19', 'Female', '654 Birch St, Townsville');
+
+==============================================================================================================================
+
+Specialties:
+Query:1
+CREATE TABLE Specialties (
+    specialty_id INT PRIMARY KEY,
+    specialty_name VARCHAR(100)
+);
+
+Query:2
+INSERT INTO Specialties VALUES 
+(111, 'Cardiologist'),
+(112, 'Dermatologist'),
+(113, 'Neurologist'),
+(114, 'Psychiatrist'),
+(115, 'Pediatrician');
+
+===============================================================================
+
+Departments:
+Query:1
+CREATE TABLE Departments (
+    department_id INT PRIMARY KEY,
+    department_name VARCHAR(100)
+);
+
+Query:2
+INSERT INTO Departments VALUES 
+(101, 'Cardiology'),
+(102, 'Dermatology'),
+(103, 'Neurology'),
+(104, 'orthology'),
+(105, 'dentist');
+
+===================================================================================
+
+Doctors:
+Query:1
+CREATE TABLE Doctors (
+    doctor_id INT PRIMARY KEY,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    department_id INT,
+    specialty_id INT,
+    joining_date DATE,
+    FOREIGN KEY (department_id) REFERENCES Departments(department_id),
+    FOREIGN KEY (specialty_id) REFERENCES Specialties(specialty_id)
+);
+
+Query:2
+INSERT INTO Doctors VALUES 
+(201, 'John', 'Smith', 'john.smith@example.com', '123-456-7890', 101, 111, '2015-01-01'),
+(202, 'Alice', 'Brown', 'alice.brown@example.com', '234-567-8901', 102, 112, '2018-06-15'),
+(203, 'Bob', 'Johnson', 'bob.johnson@example.com', '345-678-9012', 103, 113, '2020-03-20'),
+(204, 'Catherine', 'Davis', 'catherine.davis@example.com', '456-789-0123', 104, 114, '2017-11-10'),
+(205, 'David', 'Wilson', 'david.wilson@example.com', '567-890-1234', 105, 115, '2019-05-25');
+
+=============================================================================================================
+
+Appointments:
+Query:1
+CREATE TABLE Appointments (
+    appointment_id INT PRIMARY KEY,
+    doctor_id INT,
+    patient_id INT,
+    appointment_date DATETIME,
+    reason TEXT,
+    status VARCHAR(20),
+    FOREIGN KEY (doctor_id) REFERENCES Doctors(doctor_id),
+    FOREIGN KEY (patient_id) REFERENCES Patients(patient_id)
+);
+
+Query:2
+INSERT INTO Appointments VALUES 
+(1001, 201, 1, '2025-01-10 09:00:00', 'Routine Checkup', 'Scheduled'),
+(1002, 202, 2, '2025-01-12 11:00:00', 'Skin Rash', 'Completed'),
+(1003, 203, 3, '2025-01-14 14:30:00', 'Headache', 'Cancelled'),
+(1004, 204, 4, '2025-01-16 08:45:00', 'Depression', 'Scheduled'),
+(1005, 205, 5, '2025-01-18 10:00:00', 'Routine Checkup', 'Completed');
+
+================================================================================================================
+
+Payments:
+Query:1
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY,
+    appointment_id INT,
+    payment_date DATE,
+    payment_amount DECIMAL(10, 2),
+    payment_method VARCHAR(20),
+    FOREIGN KEY (appointment_id) REFERENCES Appointments(appointment_id)
+);
+
+Query:2
+INSERT INTO Payments VALUES 
+(10, 1001, '2025-01-12', 200.00, 'Credit Card'),
+(20, 1002, '2024-03-18', 150.00, 'Cash'),
+(30, 1003, '2023-07-1', 400.00, 'Credit Card'),
+(40, 1004, '2022-01-18', 300.00, 'Cash'),
+(50, 1005, '2020-03-12', 800.00, 'Credit Card');
+
+==========================================================================================================
+
+SQL Queries for the Case Study
+
+1. Find the Total Number of Appointments for Each Doctor
+Query: SELECT doctor_id, COUNT(appointment_id) AS total_appointments
+       FROM Appointments
+       GROUP BY doctor_id;
+
+=======================================================================================
+
+2. List All Patients Who Have an Appointment with a Specific Doctor (e.g., Dr. John Smith)
+Query: SELECT p.patient_id, p.first_name, p.last_name, p.email, p.phone
+       FROM Patients p
+       JOIN Appointments a ON p.patient_id = a.patient_id
+       JOIN Doctors d ON a.doctor_id = d.doctor_id
+       WHERE d.first_name = 'John' AND d.last_name = 'Smith';
+
+==========================================================================================
+
+3. Find the Number of Appointments Scheduled in a Specific Department
+Query: SELECT d.department_name, COUNT(a.appointment_id) AS total_appointments
+       FROM Appointments a
+       JOIN Doctors doc ON a.doctor_id = doc.doctor_id
+       JOIN Departments d ON doc.department_id = d.department_id
+       GROUP BY d.department_name;
+
+=======================================================================================
+
+4. Find the Most Popular Specialty Based on Number of Appointments
+Query: SELECT s.specialty_name, COUNT(a.appointment_id) AS total_appointments
+       FROM Appointments a
+       JOIN Doctors doc ON a.doctor_id = doc.doctor_id
+       JOIN Specialties s ON doc.specialty_id = s.specialty_id
+       GROUP BY s.specialty_name
+       ORDER BY total_appointments DESC
+       LIMIT 1;
+====================================================================================
+
+5. Get the Total Payment Amount for All Completed Appointments
+Query: SELECT SUM(p.payment_amount) AS total_payments
+       FROM Payments p
+       JOIN Appointments a ON p.appointment_id = a.appointment_id
+       WHERE a.status = 'Completed';
+=======================================================================================
+
+6. Find the Number of Patients Seen by Each Doctor
+Query: SELECT doctor_id, COUNT(DISTINCT patient_id) AS total_patients
+       FROM Appointments
+       GROUP BY doctor_id;
+=====================================================================================
+
+7. List All Patients Who Have Missed Their Appointments (Status 'Cancelled')
+Query: SELECT p.patient_id, p.first_name, p.last_name, p.email, p.phone
+       FROM Patients p
+       JOIN Appointments a ON p.patient_id = a.patient_id
+       WHERE a.status = 'Cancelled';
+==================================================================================
+
+8. Find the Total Number of Appointments for Each Status (Scheduled, Completed, Cancelled)
+Query: SELECT status, COUNT(appointment_id) AS total_appointments
+       FROM Appointments
+       GROUP BY status;
+================================================================================================
+
+9. Get the Average Payment Amount for Completed Appointments
+Query: SELECT AVG(payment_amount) AS avg_payment
+       FROM Payments p
+      JOIN Appointments a ON p.appointment_id = a.appointment_id
+      WHERE a.status = 'Completed';
+================================================================================
+
+10. Find the Doctor with the Highest Number of Appointments
+Query: SELECT doctor_id, COUNT(appointment_id) AS total_appointments
+       FROM Appointments
+       GROUP BY doctor_id
+       ORDER BY total_appointments DESC
+       LIMIT 1;
+

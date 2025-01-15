@@ -1,0 +1,215 @@
+
+                         TASK #5
+=================================================================
+DATABASE => ZOMATO
+Query:CREATE DATABASE ZOMATO
+
+CREATE TABLE Restaurants (
+    RestaurantID INT PRIMARY KEY,          
+    Name VARCHAR(255) NOT NULL,            
+    City VARCHAR(100) NOT NULL,            
+    CuisineType VARCHAR(50) NOT NULL,     
+    Rating DECIMAL(2, 1) CHECK (Rating >= 0 AND Rating <= 5),
+    AverageCostForTwo DECIMAL(10, 2));
+
+INSERT INTO Restaurants VALUES
+(1, 'Tandoor Delight', 'New York', 'Indian', 4.5, 40),
+(2, 'Dragon Wok', 'San Francisco', 'Chinese', 4.0, 35),
+(3, 'La Trattoria', 'Chicago', 'Italian', 4.7, 50),
+(4, 'Sushi Kingdom', 'Los Angeles', 'Japanese', 4.6, 60),
+(5, 'Spicy Sizzler', 'Houston', 'Indian', 4.2, 30),
+(6, 'The Green Bowl', 'Austin', 'Vegetarian', 4.8, 25),
+(7, 'Pasta Fiesta', 'Miami', 'Italian', 4.3, 45),
+(8, 'Dim Sum Express', 'Seattle', 'Chinese', 4.4, 38),
+(9, 'El Camino', 'San Diego', 'Mexican', 4.6, 28),
+(10, 'Bistro Cafe', 'Boston', 'French', 4.5, 55);
+
+
+============================================================================
+
+Customers:
+Query:1
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,         
+    FirstName VARCHAR(100) NOT NULL,    
+    LastName VARCHAR(100) NOT NULL,     
+    Phone VARCHAR(15),                  
+    City VARCHAR(100),                  
+    JoinDate DATE);
+
+Query:2
+INSERT INTO Customers VALUES
+(10, 'John', 'Doe', '9090901234', 'New York', '2023-01-15'),
+(20, 'Jane', 'Smith', '8080805678', 'San Francisco', '2023-02-20'),
+(30, 'Michael', 'Johnson', '7070709876', 'Chicago', '2023-03-10'),
+(40, 'Emily', 'Davis', '6060605432', 'Los Angeles', '2023-04-05'),
+(50, 'David', 'Miller', '5050506789', 'Houston', '2023-05-18'),
+(60, 'Sarah', 'Wilson', '4040404321', 'Austin', '2023-06-23'),
+(70, 'James', 'Moore', '3030301357', 'Miami', '2023-07-30'),
+(80, 'Sophia', 'Taylor', '2020202468', 'Seattle', '2023-08-12'),
+(90, 'Daniel', 'Anderson', '1010108642', 'Boston', '2023-09-25'),
+(100, 'Olivia', 'Thomas', '8989897531', 'San Diego', '2023-10-03');
+
+=================================================================================
+
+Orders:
+Query:1
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,             
+    CustomerID INT, 
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    RestaurantID INT,
+    FOREIGN KEY (RestaurantID) REFERENCES Restaurants(RestaurantID), 
+    OrderDate DATE,                       
+    OrderAmount DECIMAL(10, 2),           
+    OrderStatus VARCHAR(50));
+
+Query:2
+INSERT INTO Orders VALUES
+(100, 10, 1, '2023-01-15', 45.50, 'Delivered'),
+(200, 20, 2, '2023-02-20', 30.75, 'Pending'),
+(300, 30, 3, '2023-03-10', 55.20, 'Delivered'),
+(400, 40, 4, '2023-04-05', 22.80, 'Cancelled'),
+(500, 50, 5, '2023-05-18', 18.40, 'Delivered'),
+(600, 60, 6, '2023-06-23', 50.00, 'Pending'),
+(700, 70, 7, '2023-07-30', 40.15, 'Delivered'),
+(800, 80, 8, '2023-08-12', 33.50, 'Pending'),
+(900, 90, 9, '2023-09-25', 60.00, 'Cancelled'),
+(1000, 100, 10, '2023-10-03', 72.45, 'Delivered');
+
+
+==========================================================================
+
+Reviews:
+Query:1
+CREATE TABLE Reviews (
+    ReviewID INT PRIMARY KEY,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID),
+    RestaurantID INT,
+    FOREIGN KEY (RestaurantID) REFERENCES Restaurants(RestaurantID),
+    Rating INT CHECK(Rating >= 1 AND Rating <= 5),
+    Comment TEXT,
+    ReviewDate DATE);
+
+Query:2
+INSERT INTO Reviews VALUES
+(111, 10, 1, 4, 'Great food and excellent service!', '2025-01-05'),
+(112, 20, 2, 5, 'Amazing ambiance and the best pizza in town.', '2025-01-06'),
+(113, 30, 3, 3, 'Food was okay, but the wait time was long.', '2025-01-07'),
+(114, 40, 4, 4, 'Good value for money. Would recommend.', '2025-01-08'),
+(115, 50, 5, 2, 'Disappointed. The food was bland.', '2025-01-09'),
+(116, 60, 6, 5, 'Perfect experience. Everything was great!', '2025-01-10'),
+(117, 70, 7, 1, 'Worst meal ever. I wouldn’t come back.', '2025-01-11'),
+(118, 80, 8, 3, 'It’s a decent place, but could be better.', '2025-01-12'),
+(119, 90, 9, 5, 'Absolutely fantastic! I will be back soon.', '2025-01-13'),
+(1110, 100,10, 4, 'Nice atmosphere, but the portions were small.', '2025-01-14');
+
+=====================================================================================================================
+
+Payments:
+Query:1
+CREATE TABLE Payments (
+    PaymentID INT PRIMARY KEY,
+    OrderID INT,
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    PaymentMethod VARCHAR(50),
+    Amount DECIMAL(10, 2),
+    PaymentDate DATE);
+
+Query:2
+INSERT INTO Payments VALUES
+(01, 100, 'Card', 50.75, '2025-01-05'),
+(02, 200, 'Cash', 30.20, '2025-01-06'),
+(03, 300, 'Wallet', 45.50, '2025-01-07'),
+(04, 400, 'Card', 120.00, '2025-01-08'),
+(05, 500, 'Cash', 80.00, '2025-01-09'),
+(06, 600, 'Card', 200.90, '2025-01-10'),
+(07, 700, 'Wallet', 15.50, '2025-01-11'),
+(08, 800, 'Card', 55.00, '2025-01-12'),
+(09, 900, 'Cash', 25.75, '2025-01-13'),
+(010, 1000, 'Wallet', 40.10, '2025-01-14');
+
+===================================================================================================================
+
+Assignment Queries
+
+1. Retrieve the names and locations of restaurants with a rating of 4.5 or higher.
+Query: SELECT Name, City 
+       FROM restaurants
+       WHERE Rating >= 4.5;
+
+=========================================================================================================
+
+2. Find the total number of orders placed by each customer.
+Query: SELECT C.CustomerID, C.FirstName, C.LastName, COUNT(O.OrderID) AS TotalOrders 
+       FROM Customers C 
+       LEFT JOIN Orders O ON C.CustomerID = O.CustomerID 
+       GROUP BY C.CustomerID, C.FirstName, C.LastName;
+========================================================================================================================
+
+3. List all restaurants offering "Italian" cuisine in "Mumbai".
+Query: SELECT Name, City 
+       FROM Restaurants 
+       WHERE CuisineType = 'Italian' AND City = 'Mumbai';
+=====================================================================================================================
+
+4. Calculate the total revenue generated by each restaurant from completed orders.
+Query: SELECT R.RestaurantID, R.Name, SUM(O.OrderAmount) AS TotalRevenue 
+       FROM Restaurants R 
+       JOIN Orders O ON R.RestaurantID = O.RestaurantID 
+       WHERE O.OrderStatus = 'Delivered' 
+       GROUP BY R.RestaurantID, R.Name 
+       ORDER BY TotalRevenue DESC;
+=================================================================================================================
+
+5. Retrieve the most recent order placed by each customer.
+Query: SELECT O.CustomerID, MAX(O.OrderDate) AS MostRecentOrderDate 
+       FROM Orders O 
+      GROUP BY O.CustomerID;
+========================================================================================================================
+
+6. List customers who have not placed any orders yet.
+Query: SELECT C.CustomerID, C.FirstName, C.LastName 
+       FROM Customers C 
+       LEFT JOIN Orders O ON C.CustomerID = O.CustomerID 
+       WHERE O.OrderID IS NULL;
+=====================================================================================================================
+
+7. Identify the most reviewed restaurants.
+Query: SELECT R.RestaurantID, R.Name, COUNT(Rev.ReviewID) AS TotalReviews 
+       FROM Restaurants R 
+       JOIN Reviews Rev ON R.RestaurantID = Rev.RestaurantID 
+       GROUP BY R.RestaurantID, R.Name 
+       ORDER BY TotalReviews DESC;
+
+=================================================================================================================
+
+8. Find the most preferred payment method.
+Query: SELECT PaymentMethod, COUNT(PaymentID) AS UsageCount 
+       FROM Payments 
+       GROUP BY PaymentMethod 
+       ORDER BY UsageCount DESC 
+       LIMIT 1;
+=============================================================================================
+
+9. List the top 5 restaurants by total revenue.
+Query: SELECT R.RestaurantID, R.Name, SUM(O.OrderAmount) AS TotalRevenue 
+       FROM Restaurants R 
+       JOIN Orders O ON R.RestaurantID = O.RestaurantID 
+       WHERE O.OrderStatus = 'Delivered' 
+       GROUP BY R.RestaurantID, R.Name 
+       ORDER BY TotalRevenue DESC 
+       LIMIT 5;
+
+=============================================================================================================
+
+10. Show the details of all cancelled orders along with the customer's and restaurant's names.
+Query: SELECT R.RestaurantID, R.Name, SUM(O.OrderAmount) AS TotalRevenue 
+       FROM Restaurants R 
+       JOIN Orders O ON R.RestaurantID = O.RestaurantID 
+       WHERE O.OrderStatus = 'Delivered' 
+       GROUP BY R.RestaurantID, R.Name 
+       ORDER BY TotalRevenue DESC 
+       LIMIT 5;
+==========================================================================================================================================
